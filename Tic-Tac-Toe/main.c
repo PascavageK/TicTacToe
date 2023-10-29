@@ -55,6 +55,7 @@ int checkWin(char boardState[]) {
     return 0;
 }
 
+//Move select
 int playerMove(char player) {
     int space;
 
@@ -64,22 +65,54 @@ int playerMove(char player) {
     return space;
 }
 
+//Opening sequence
+int mainMenu() {
+    int play = 65;
+
+    printf("\nWould you like to play? (1/0): ");
+    scanf("%d", &play);
+
+    if (play == 1) return 1;
+    return 0;
+}
+
+//Adds all ascii values in a char array
+int evalCharArray(char charArray[]) {
+    int total = 0;
+    //int arrayLength = sizeof(charArray)/sizeof(charArray[0]); 
+
+    for (int i = 0; i < 9/*arrayLength*/; i++) {
+        total += charArray[i];
+    }
+    return total;
+}
+
 //main!
 int main() {
     //Board
     char boardState[] = {48, 49, 50, 51, 52, 53, 54, 55, 56};
 
     //Game loop
-    for (int i = 0; i < 4; i++) {
-        drawBoard(boardState);
-        boardState[playerMove(88)] = 88;
-        drawBoard(boardState);
-        if (checkWin(boardState) == 1) {printf("\n\nPlayer O wins!"); break;}
-        boardState[playerMove(79)] = 79;
-        drawBoard(boardState);
-        if (checkWin(boardState) == 2) {printf("\n\nPlayer X wins!"); break;}
+    if (mainMenu()) {
+        while (evalCharArray(boardState) < 756 && checkWin(boardState) == 0) {
+            drawBoard(boardState);
+            boardState[playerMove(88)] = 88;
+            drawBoard(boardState);
+            if (evalCharArray(boardState) == 756 || checkWin(boardState) != 0) break;
+            boardState[playerMove(79)] = 79;
+            drawBoard(boardState);
+        }
+        
+        switch (checkWin(boardState)) {
+            case 1:
+                printf("\n\nPlayer O wins!");
+            case 2:
+                printf("\n\nPlayer X wins!");
+            default:
+                printf("\n\nIt is a tie!");
+        }
+        main();
     }
-    
-
     return 0;
 }
+
